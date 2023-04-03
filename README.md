@@ -133,7 +133,7 @@ This project is no longer maintained and thus does not accept any new contributi
 
 ### Thanks
 
-To Friedrich Große. He maintained this library for 11 years. And of couse to [all contributors][1] so far!
+Huge thanks to Friedrich Große. He maintained this library for 11 years. And of course to [all contributors][1] so far!
 
 ## License
 
