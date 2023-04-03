@@ -132,7 +132,7 @@ To see some example usage of the API classes or some generated output check out 
 
 This project is no longer maintained and thus does not accept any new contributions.
 
-### Thanks
+### Historical contributors
 
 Huge thanks to Friedrich Große. He maintained this library for 11 years. And of course to [all contributors][1] so far!
 
