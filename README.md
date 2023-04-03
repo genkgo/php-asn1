@@ -17,8 +17,10 @@ The **changelog** can now be found at [CHANGELOG.md](CHANGELOG.md).
 ## Dependencies
 
 PHPASN1 requires at [a PHP versions receiving security support](https://www.php.net/supported-versions.php) and either the `gmp` or `bcmath` extension.
-Support for PHP version 5 was dropped starting with `v2.0`.
-Support for PHP version 7 was dropped starting with `v2.6`.
+
+Support for older PHP versions:
+- Support for PHP version 5 was dropped starting with `v2.0`.
+- Support for PHP version 7 was dropped starting with `v2.6`.
 
 For the loading of object identifier names directly from the web [curl][7] is used.
 
