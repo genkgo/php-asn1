@@ -2,7 +2,6 @@ PHPASN1
 =======
 
 [![Build Status](https://github.com/fgrosse/PHPASN1/actions/workflows/phpunit.yml/badge.svg)](https://github.com/fgrosse/PHPASN1/actions/workflows/phpunit.yml)
-[![PHP 7 ready](http://php7ready.timesplinter.ch/fgrosse/PHPASN1/badge.svg)](https://travis-ci.org/fgrosse/PHPASN1)
 [![Coverage Status](https://coveralls.io/repos/fgrosse/PHPASN1/badge.svg?branch=master&service=github)](https://coveralls.io/github/fgrosse/PHPASN1?branch=master)
 
 [![Latest Stable Version](https://poser.pugx.org/fgrosse/phpasn1/v/stable.png)](https://packagist.org/packages/fgrosse/phpasn1)
@@ -24,9 +23,9 @@ The **changelog** can now be found at [CHANGELOG.md](CHANGELOG.md).
 
 ## Dependencies
 
-PHPASN1 requires at least `PHP 7.0` and either the `gmp` or `bcmath` extension.
-Support for older PHP versions (i.e. PHP 5.6) was dropped starting with `v2.0`.
-If you must use an outdated PHP version consider using [PHPASN v1.5][13].
+PHPASN1 requires at [a PHP versions receiving security support](https://www.php.net/supported-versions.php) and either the `gmp` or `bcmath` extension.
+Support for PHP version 5 was dropped starting with `v2.0`.
+Support for PHP version 7 was dropped starting with `v2.6`.
 
 For the loading of object identifier names directly from the web [curl][7] is used.
 
@@ -159,4 +158,3 @@ This library is distributed under the [MIT License](LICENSE).
 [10]: https://coveralls.io/github/fgrosse/PHPASN1
 [11]: https://github.com/fgrosse/PHPASN1/blob/master/tests/ASN1/TemplateParserTest.php#L16
 [12]: https://groups.google.com/d/forum/phpasn1
-[13]: https://packagist.org/packages/fgrosse/phpasn1#1.5.2
