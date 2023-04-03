@@ -1,14 +1,7 @@
 PHPASN1
 =======
 
-[![Build Status](https://github.com/fgrosse/PHPASN1/actions/workflows/phpunit.yml/badge.svg)](https://github.com/fgrosse/PHPASN1/actions/workflows/phpunit.yml)
-[![Coverage Status](https://coveralls.io/repos/fgrosse/PHPASN1/badge.svg?branch=master&service=github)](https://coveralls.io/github/fgrosse/PHPASN1?branch=master)
-
-[![Latest Stable Version](https://poser.pugx.org/fgrosse/phpasn1/v/stable.png)](https://packagist.org/packages/fgrosse/phpasn1)
-[![Total Downloads](https://poser.pugx.org/fgrosse/phpasn1/downloads.png)](https://packagist.org/packages/fgrosse/phpasn1)
-[![Latest Unstable Version](https://poser.pugx.org/fgrosse/phpasn1/v/unstable.png)](https://packagist.org/packages/fgrosse/phpasn1)
-[![License](https://poser.pugx.org/fgrosse/phpasn1/license.png)](https://packagist.org/packages/fgrosse/phpasn1)
-
+[![Build Status](https://github.com/genkgo/php-asn1/actions/workflows/phpunit.yml/badge.svg)](https://github.com/genkgo/php-asn1/actions/workflows/phpunit.yml)
 ---
 
 A PHP Framework that allows you to encode and decode arbitrary [ASN.1][3] structures
@@ -34,7 +27,7 @@ For the loading of object identifier names directly from the web [curl][7] is us
 The preferred way to install this library is to rely on [Composer][2]:
 
 ```bash
-$ composer require fgrosse/phpasn1
+$ composer require genkgo/php-asn1
 ```
 
 ## Usage
@@ -124,14 +117,14 @@ You can use this function to make sure your data has exactly the format you are 
 
 All constructed classes (i.e. `Sequence` and `Set`) can be navigated by array access or using an iterator.
 You can find examples
-[here](https://github.com/fgrosse/PHPASN1/blob/f6442cadda9d36f3518c737e32f28300a588b777/tests/ASN1/Universal/SequenceTest.php#L148-148),
-[here](https://github.com/fgrosse/PHPASN1/blob/f6442cadda9d36f3518c737e32f28300a588b777/tests/ASN1/Universal/SequenceTest.php#L121) and 
-[here](https://github.com/fgrosse/PHPASN1/blob/f6442cadda9d36f3518c737e32f28300a588b777/tests/ASN1/TemplateParserTest.php#L45).
+[here](https://github.com/genkgo/php-asn1/blob/f6442cadda9d36f3518c737e32f28300a588b777/tests/ASN1/Universal/SequenceTest.php#L148-148),
+[here](https://github.com/genkgo/php-asn1/blob/f6442cadda9d36f3518c737e32f28300a588b777/tests/ASN1/Universal/SequenceTest.php#L121) and 
+[here](https://github.com/genkgo/php-asn1/blob/f6442cadda9d36f3518c737e32f28300a588b777/tests/ASN1/TemplateParserTest.php#L45).
 
 
 ### Give me more examples!
 
-To see some example usage of the API classes or some generated output check out the [examples](https://github.com/fgrosse/PHPASN1/tree/master/examples).
+To see some example usage of the API classes or some generated output check out the [examples](https://github.com/genkgo/php-asn1/tree/master/examples).
 
 
 ### How do I contribute?
@@ -140,13 +133,13 @@ This project is no longer maintained and thus does not accept any new contributi
 
 ### Thanks
 
-To [all contributors][1] so far!
+To Friedrich Große. He maintained this library for 11 years. And of couse to [all contributors][1] so far!
 
 ## License
 
 This library is distributed under the [MIT License](LICENSE).
 
-[1]: https://github.com/fgrosse/PHPASN1/graphs/contributors
+[1]: https://github.com/genkgo/php-asn1/graphs/contributors
 [2]: https://getcomposer.org/
 [3]: http://www.itu.int/ITU-T/asn1/
 [4]: http://www.itu.int/ITU-T/recommendations/rec.aspx?rec=x.690
@@ -154,7 +147,3 @@ This library is distributed under the [MIT License](LICENSE).
 [6]: http://en.wikipedia.org/wiki/X.690#BER_encoding
 [7]: http://php.net/manual/en/book.curl.php
 [8]: http://en.wikipedia.org/wiki/X.690#DER_encoding
-[9]: https://styleci.io
-[10]: https://coveralls.io/github/fgrosse/PHPASN1
-[11]: https://github.com/fgrosse/PHPASN1/blob/master/tests/ASN1/TemplateParserTest.php#L16
-[12]: https://groups.google.com/d/forum/phpasn1
