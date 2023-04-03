@@ -1,3 +1,6 @@
+#### v2.6.0 (2023-04)
+* From now on this library only supports [PHP versions receiving security support](https://www.php.net/supported-versions.php).
+
 #### v2.5.0 (2022-12)
 * Support PHP 8.2 [#99](https://github.com/fgrosse/PHPASN1/pull/99)
 * PHP 8 compatibility fix for DateTime::getLastErrors [#98](https://github.com/fgrosse/PHPASN1/pull/98)
