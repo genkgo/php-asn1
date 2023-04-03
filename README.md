@@ -12,13 +12,6 @@ PHPASN1
 
 ---
 
-<h2><span style="color:red">Notice: This library is no longer actively maintained!</span></h2>
-If you are currently using PHPASN1, this might not be an immediate problem for you, since this library was always rather stable.
-
-However, you are advised to migrate to alternative packages to ensure that your applications remain functional also with newer PHP versions.
-
----
-
 A PHP Framework that allows you to encode and decode arbitrary [ASN.1][3] structures
 using the [ITU-T X.690 Encoding Rules][4].
 This encoding is very frequently used in [X.509 PKI environments][5] or the communication between heterogeneous computer systems.
