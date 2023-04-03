@@ -126,6 +126,7 @@ You can find examples
 
 To see some example usage of the API classes or some generated output check out the [examples](https://github.com/genkgo/php-asn1/tree/master/examples).
 
+## Contributing
 
 ### How do I contribute?
 
