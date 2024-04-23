@@ -59,14 +59,12 @@ class OctetString extends ASNObject implements Parsable
         if (is_null($value)) {
             return '';
         }
-        if (strlen($value) & 1) {
-            $value = '0' . $value;
-        }
+        // This appears to expect hex strings but sometimes is populated by binary data
         $result = '';
 
-        //Actual content
+        // Actual content
         while (strlen($value) >= 2) {
-            // get the hex value byte by byte from the string and and add it to binary result
+            // get the hex value byte by byte from the string and add it to binary result
             $result .= @chr(hexdec(substr($value, 0, 2)));
             $value = substr($value, 2);
         }
