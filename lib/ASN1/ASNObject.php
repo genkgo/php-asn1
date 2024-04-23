@@ -336,6 +336,9 @@ abstract class ASNObject implements Parsable
                 }
                 $contentLength = $contentLength->shiftLeft(8)->add($octet);
             }
+            if ($nrOfLengthOctets < 2 && $contentLength->compare(0x80) < 0) {
+                throw new ParserException('Extended length used for short message', $offsetIndex);
+            }
 
             if ($contentLength->compare(PHP_INT_MAX) > 0) {
                 throw new ParserException("Can not parse content length from data: length > maximum integer", $offsetIndex);
