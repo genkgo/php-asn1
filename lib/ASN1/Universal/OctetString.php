@@ -47,18 +47,27 @@ class OctetString extends ASNObject implements Parsable
 
     protected function calculateContentLength()
     {
+        if (is_null($this->value)) {
+            return 0;
+        }
         return strlen($this->value) / 2;
     }
 
     protected function getEncodedValue()
     {
         $value = $this->value;
+        if (is_null($value)) {
+            return '';
+        }
+        if (strlen($value) & 1) {
+            $value = '0' . $value;
+        }
         $result = '';
 
         //Actual content
         while (strlen($value) >= 2) {
             // get the hex value byte by byte from the string and and add it to binary result
-            $result .= chr(hexdec(substr($value, 0, 2)));
+            $result .= @chr(hexdec(substr($value, 0, 2)));
             $value = substr($value, 2);
         }
 
@@ -67,6 +76,9 @@ class OctetString extends ASNObject implements Parsable
 
     public function getContent()
     {
+        if (is_null($this->value)) {
+            return '';
+        }
         return strtoupper($this->value);
     }
 
