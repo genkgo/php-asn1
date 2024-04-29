@@ -1,3 +1,6 @@
+#### v2.6.1 (2024-04)
+* Stricter content length in ASNObject
+
 #### v2.6.0 (2023-04)
 * From now on this library only supports [PHP versions receiving security support](https://www.php.net/supported-versions.php).
 
