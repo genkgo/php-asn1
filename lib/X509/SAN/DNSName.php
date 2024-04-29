@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare(strict_types=1);
 
 namespace FG\X509\SAN;
 
@@ -16,12 +17,12 @@ class DNSName extends GeneralString
 {
     const IDENTIFIER = 0x82; // not sure yet why this is the identifier used in SAN extensions
 
-    public function __construct($dnsNameString)
+    public function __construct(string $dnsNameString)
     {
         parent::__construct($dnsNameString);
     }
 
-    public function getType()
+    public function getType(): int
     {
         return self::IDENTIFIER;
     }

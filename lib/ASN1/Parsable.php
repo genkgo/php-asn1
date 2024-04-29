@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare(strict_types=1);
 
 namespace FG\ASN1;
 
@@ -28,5 +29,5 @@ interface Parsable
      *
      * @return static
      */
-    public static function fromBinary(&$binaryData, &$offsetIndex = null);
+    public static function fromBinary(string &$binaryData, ?int &$offsetIndex = 0): static;
 }

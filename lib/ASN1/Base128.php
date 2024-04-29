@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace FG\ASN1;
 
@@ -10,12 +11,7 @@ use InvalidArgumentException;
  */
 class Base128
 {
-    /**
-     * @param int $value
-     *
-     * @return string
-     */
-    public static function encode($value)
+    public static function encode(int $value): string
     {
         $value = BigInteger::create($value);
         $octets = chr($value->modulus(0x80)->toInteger());
@@ -30,13 +26,9 @@ class Base128
     }
 
     /**
-     * @param string $octets
-     *
      * @throws InvalidArgumentException if the given octets represent a malformed base-128 value or the decoded value would exceed the the maximum integer length
-     *
-     * @return int
      */
-    public static function decode($octets)
+    public static function decode(string $octets): string
     {
         $bitsPerOctet = 7;
         $value = BigInteger::create(0);

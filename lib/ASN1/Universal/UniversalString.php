@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare(strict_types=1);
 
 namespace FG\ASN1\Universal;
 
@@ -20,16 +21,14 @@ class UniversalString extends AbstractString
      * TODO The encodable characters of this type are not yet checked.
      *
      * @see http://en.wikipedia.org/wiki/Universal_Character_Set
-     *
-     * @param string $string
      */
-    public function __construct($string)
+    public function __construct(string $string)
     {
-        $this->value = $string;
+        parent::__construct($string);
         $this->allowAll();
     }
 
-    public function getType()
+    public function getType(): int
     {
         return Identifier::UNIVERSAL_STRING;
     }

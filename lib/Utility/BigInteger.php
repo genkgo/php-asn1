@@ -5,6 +5,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare(strict_types=1);
 
 namespace FG\Utility;
 
@@ -22,34 +23,26 @@ abstract class BigInteger
 {
     /**
      * Force a preference on the underlying big number implementation, useful for testing.
-     * @var string|null
      */
-    private static $_prefer;
+    private static string|int|null $_prefer = null;
 
-    public static function setPrefer($prefer = null)
+    public static function setPrefer(string|int $prefer = null)
     {
         self::$_prefer = $prefer;
     }
 
     /**
      * Create a BigInteger instance based off the base 10 string or an integer.
-     * @param string|int $val
-     * @return BigInteger
      * @throws \InvalidArgumentException
      */
-    public static function create($val)
+    public static function create(string|int $val): BigInteger
     {
         if (self::$_prefer) {
-            switch (self::$_prefer) {
-                case 'gmp':
-                    $ret = new BigIntegerGmp();
-                    break;
-                case 'bcmath':
-                    $ret = new BigIntegerBcmath();
-                    break;
-                default:
-                    throw new \UnexpectedValueException('Unknown number implementation: ' . self::$_prefer);
-            }
+            $ret = match (self::$_prefer) {
+                'gmp' => new BigIntegerGmp(),
+                'bcmath' => new BigIntegerBcmath(),
+                default => throw new \UnexpectedValueException('Unknown number implementation: ' . self::$_prefer),
+            };
         }
         else {
             // autodetect
@@ -91,105 +84,80 @@ abstract class BigInteger
 
     /**
      * Subclasses must provide clone functionality.
-     * @return BigInteger
      */
-    abstract public function __clone();
+    abstract public function __clone(): void;
 
     /**
      * Assign the instance value from base 10 string.
-     * @param string $str
      */
-    abstract protected function _fromString($str);
+    abstract protected function _fromString(string $str): void;
 
     /**
      * Assign the instance value from an integer type.
-     * @param int $integer
      */
-    abstract protected function _fromInteger($integer);
+    abstract protected function _fromInteger(int $integer): void;
 
     /**
      * Must provide string implementation that returns base 10 number.
-     * @return string
      */
-    abstract public function __toString();
+    abstract public function __toString(): string;
 
     /* INFORMATIONAL FUNCTIONS */
 
     /**
      * Return integer, if possible. Throws an exception if the number can not be represented as a native integer.
-     * @return int
      * @throws \OverflowException
      */
-    abstract public function toInteger();
+    abstract public function toInteger(): int;
 
     /**
      * Is represented integer negative?
-     * @return bool
      */
-    abstract public function isNegative();
+    abstract public function isNegative(): bool;
 
     /**
      * Compare the integer with $number, returns a negative integer if $this is less than number, returns 0 if $this is
      * equal to number and returns a positive integer if $this is greater than number.
-     * @param BigInteger|string|int $number
-     * @return int
      */
-    abstract public function compare($number);
-
-    /* MODIFY */
+    abstract public function compare(BigInteger|string|int $number): int;
 
     /**
      * Add another integer $b and returns the result.
-     * @param BigInteger|string|int $b
-     * @return BigInteger
      */
-    abstract public function add($b);
+    abstract public function add(BigInteger|string|int $b): BigInteger;
 
     /**
      * Subtract $b from $this and returns the result.
-     * @param BigInteger|string|int $b
-     * @return BigInteger
      */
-    abstract public function subtract($b);
+    abstract public function subtract(BigInteger|string|int $b): BigInteger;
 
     /**
      * Multiply value.
-     * @param BigInteger|string|int $b
-     * @return BigInteger
      */
-    abstract public function multiply($b);
+    abstract public function multiply(BigInteger|string|int $b): BigInteger;
 
     /**
      * The value $this modulus $b.
-     * @param BigInteger|string|int $b
-     * @return BigInteger
      */
-    abstract public function modulus($b);
+    abstract public function modulus(BigInteger|string|int $b): BigInteger;
 
     /**
      * Raise $this to the power of $b and returns the result.
-     * @param BigInteger|string|int $b
-     * @return BigInteger
      */
-    abstract public function toPower($b);
+    abstract public function toPower(BigInteger|string|int $b): BigInteger;
 
     /**
      * Shift the value to the right by a set number of bits and returns the result.
-     * @param int $bits
-     * @return BigInteger
      */
-    abstract public function shiftRight($bits = 8);
+    abstract public function shiftRight(int $bits = 8): BigInteger;
 
     /**
      * Shift the value to the left by a set number of bits and returns the result.
-     * @param int $bits
-     * @return BigInteger
      */
-    abstract public function shiftLeft($bits = 8);
+    abstract public function shiftLeft(int $bits = 8): BigInteger;
 
     /**
      * Returns the absolute value.
-     * @return BigInteger
      */
-    abstract public function absoluteValue();
+    abstract public function absoluteValue(): BigInteger;
 }

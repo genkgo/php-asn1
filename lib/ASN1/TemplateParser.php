@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare(strict_types=1);
 
 namespace FG\ASN1;
 
@@ -17,24 +18,18 @@ use FG\ASN1\Universal\Sequence;
 class TemplateParser
 {
     /**
-     * @param string $data
-     * @param array $template
-     * @return \FG\ASN1\ASNObject|Sequence
      * @throws ParserException if there was an issue parsing
      */
-    public function parseBase64($data, array $template)
+    public function parseBase64(string $data, array $template): ASNObject|Sequence
     {
         // TODO test with invalid data
         return $this->parseBinary(base64_decode($data), $template);
     }
 
     /**
-     * @param string $binary
-     * @param array $template
-     * @return \FG\ASN1\ASNObject|Sequence
      * @throws ParserException if there was an issue parsing
      */
-    public function parseBinary($binary, array $template)
+    public function parseBinary(string $binary, array $template): ASNObject|Sequence
     {
         $parsedObject = ASNObject::fromBinary($binary);
 
@@ -45,7 +40,7 @@ class TemplateParser
         return $parsedObject;
     }
 
-    private function validate(ASNObject $object, $key, $value)
+    private function validate(ASNObject $object, $key, $value): void
     {
         if (is_array($value)) {
             $this->assertTypeId($key, $object);
@@ -60,7 +55,7 @@ class TemplateParser
         }
     }
 
-    private function assertTypeId($expectedTypeId, ASNObject $object)
+    private function assertTypeId(int $expectedTypeId, ASNObject $object): void
     {
         $actualType = $object->getType();
         if ($expectedTypeId != $actualType) {

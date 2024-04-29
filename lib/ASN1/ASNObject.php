@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare(strict_types=1);
 
 namespace FG\ASN1;
 
@@ -37,21 +38,22 @@ use FG\ASN1\Universal\T61String;
 use FG\ASN1\Universal\ObjectDescriptor;
 use FG\Utility\BigInteger;
 use LogicException;
+use Stringable;
 
 /**
  * Class ASNObject is the base class for all concrete ASN.1 objects.
  */
-abstract class ASNObject implements Parsable
+abstract class ASNObject implements Parsable, Stringable
 {
-    private $contentLength;
-    private $nrOfLengthOctets;
+    private ?int $contentLength = null;
+    private ?int $nrOfLengthOctets = null;
 
     /**
      * Must return the number of octets of the content part.
      *
      * @return int
      */
-    abstract protected function calculateContentLength();
+    abstract protected function calculateContentLength(): int;
 
     /**
      * Encode the object using DER encoding.
@@ -60,15 +62,15 @@ abstract class ASNObject implements Parsable
      *
      * @return string the binary representation of an objects value
      */
-    abstract protected function getEncodedValue();
+    abstract protected function getEncodedValue(): ?string;
 
     /**
      * Return the content of this object in a non encoded form.
-     * This can be used to print the value in human readable form.
+     * This can be used to print the value in human-readable form.
      *
      * @return mixed
      */
-    abstract public function getContent();
+    abstract public function getContent(): mixed;
 
     /**
      * Return the object type octet.
@@ -78,7 +80,7 @@ abstract class ASNObject implements Parsable
      *
      * @return int
      */
-    abstract public function getType();
+    abstract public function getType(): int;
 
     /**
      * Returns all identifier octets. If an inheriting class models a tag with
@@ -89,7 +91,7 @@ abstract class ASNObject implements Parsable
      *
      * @return string Identifier as a set of octets
      */
-    public function getIdentifier()
+    public function getIdentifier(): string
     {
         $firstOctet = $this->getType();
 
@@ -105,7 +107,7 @@ abstract class ASNObject implements Parsable
      *
      * @return string the full binary representation of the complete object
      */
-    public function getBinary()
+    public function getBinary(): string
     {
         $result  = $this->getIdentifier();
         $result .= $this->createLengthPart();
@@ -114,7 +116,7 @@ abstract class ASNObject implements Parsable
         return $result;
     }
 
-    private function createLengthPart()
+    private function createLengthPart(): string
     {
         $contentLength = $this->getContentLength();
         $nrOfLengthOctets = $this->getNumberOfLengthOctets($contentLength);
@@ -132,9 +134,9 @@ abstract class ASNObject implements Parsable
         }
     }
 
-    protected function getNumberOfLengthOctets($contentLength = null)
+    protected function getNumberOfLengthOctets(int $contentLength = null): int
     {
-        if (!isset($this->nrOfLengthOctets)) {
+        if ($this->nrOfLengthOctets === null) {
             if ($contentLength == null) {
                 $contentLength = $this->getContentLength();
             }
@@ -151,16 +153,16 @@ abstract class ASNObject implements Parsable
         return $this->nrOfLengthOctets;
     }
 
-    protected function getContentLength()
+    protected function getContentLength(): int
     {
-        if (!isset($this->contentLength)) {
+        if ($this->contentLength === null) {
             $this->contentLength = $this->calculateContentLength();
         }
 
         return $this->contentLength;
     }
 
-    protected function setContentLength($newContentLength)
+    protected function setContentLength(int $newContentLength): void
     {
         $this->contentLength = $newContentLength;
         $this->getNumberOfLengthOctets($newContentLength);
@@ -169,7 +171,7 @@ abstract class ASNObject implements Parsable
     /**
      * Returns the length of the whole object (including the identifier and length octets).
      */
-    public function getObjectLength()
+    public function getObjectLength(): int
     {
         $nrOfIdentifierOctets = strlen($this->getIdentifier());
         $contentLength = $this->getContentLength();
@@ -178,7 +180,7 @@ abstract class ASNObject implements Parsable
         return $nrOfIdentifierOctets + $nrOfLengthOctets + $contentLength;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getContent();
     }
@@ -188,7 +190,7 @@ abstract class ASNObject implements Parsable
      *
      * @see Identifier::getName()
      */
-    public function getTypeName()
+    public function getTypeName(): string
     {
         return Identifier::getName($this->getType());
     }
@@ -201,7 +203,7 @@ abstract class ASNObject implements Parsable
      *
      * @return \FG\ASN1\ASNObject
      */
-    public static function fromBinary(&$binaryData, &$offsetIndex = 0)
+    public static function fromBinary(string &$binaryData, ?int &$offsetIndex = 0): static
     {
         if (strlen($binaryData) <= $offsetIndex) {
             throw new ParserException('Can not parse binary from data: Offset index larger than input size', $offsetIndex);

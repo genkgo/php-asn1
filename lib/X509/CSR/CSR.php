@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare(strict_types=1);
 
 namespace FG\X509\CSR;
 
@@ -21,28 +22,20 @@ use FG\X509\PublicKey;
 class CSR extends Sequence
 {
     const CSR_VERSION_NR = 0;
+    private CertificateSubject $subject;
 
-    protected $subject;
-    protected $publicKey;
-    protected $signature;
-    protected $signatureAlgorithm;
-
-    protected $startSequence;
-
-    /**
-     * @param string $commonName
-     * @param string $email
-     * @param string $organization
-     * @param string $locality
-     * @param string $state
-     * @param string $country
-     * @param string $organizationalUnit
-     * @param string $publicKey
-     * @param string $signature
-     * @param string $signatureAlgorithm
-     */
-    public function __construct($commonName, $email, $organization, $locality, $state, $country, $organizationalUnit, $publicKey, $signature = null, $signatureAlgorithm = OID::SHA1_WITH_RSA_SIGNATURE)
-    {
+    public function __construct(
+        string $commonName,
+        string $email,
+        string $organization,
+        string $locality,
+        string $state,
+        string $country,
+        string $organizationalUnit,
+        private string $publicKey,
+        private ?string $signature = null,
+        private string $signatureAlgorithm = OID::SHA1_WITH_RSA_SIGNATURE
+    ) {
         $this->subject = new CertificateSubject(
             $commonName,
             $email,
@@ -52,16 +45,15 @@ class CSR extends Sequence
             $country,
             $organizationalUnit
         );
-        $this->publicKey = $publicKey;
-        $this->signature = $signature;
-        $this->signatureAlgorithm = $signatureAlgorithm;
 
-        if (isset($signature)) {
+        if ($signature !== null) {
             $this->createCSRSequence();
         }
+
+        parent::__construct();
     }
 
-    protected function createCSRSequence()
+    protected function createCSRSequence(): void
     {
         $versionNr            = new Integer(self::CSR_VERSION_NR);
         $publicKey            = new PublicKey($this->publicKey);
@@ -78,7 +70,7 @@ class CSR extends Sequence
         $this->addChild($signature);
     }
 
-    public function getSignatureSubject()
+    public function getSignatureSubject(): string
     {
         $versionNr            = new Integer(self::CSR_VERSION_NR);
         $publicKey            = new PublicKey($this->publicKey);
@@ -87,7 +79,7 @@ class CSR extends Sequence
         return $certRequestInfo->getBinary();
     }
 
-    public function setSignature($signature, $signatureAlgorithm = OID::SHA1_WITH_RSA_SIGNATURE)
+    public function setSignature($signature, $signatureAlgorithm = OID::SHA1_WITH_RSA_SIGNATURE): void
     {
         $this->signature = $signature;
         $this->signatureAlgorithm = $signatureAlgorithm;
@@ -95,7 +87,7 @@ class CSR extends Sequence
         $this->createCSRSequence();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         $tmp = base64_encode($this->getBinary());
 
@@ -112,47 +104,47 @@ class CSR extends Sequence
         return $result;
     }
 
-    public function getVersion()
+    public function getVersion(): int
     {
         return self::CSR_VERSION_NR;
     }
 
-    public function getOrganizationName()
+    public function getOrganizationName(): string
     {
         return $this->subject->getOrganization();
     }
 
-    public function getLocalName()
+    public function getLocalName(): string
     {
         return $this->subject->getLocality();
     }
 
-    public function getState()
+    public function getState(): string
     {
         return $this->subject->getState();
     }
 
-    public function getCountry()
+    public function getCountry(): string
     {
         return $this->subject->getCountry();
     }
 
-    public function getOrganizationalUnit()
+    public function getOrganizationalUnit(): string
     {
         return $this->subject->getOrganizationalUnit();
     }
 
-    public function getPublicKey()
+    public function getPublicKey(): string
     {
         return $this->publicKey;
     }
 
-    public function getSignature()
+    public function getSignature(): string
     {
         return $this->signature;
     }
 
-    public function getSignatureAlgorithm()
+    public function getSignatureAlgorithm(): string
     {
         return $this->signatureAlgorithm;
     }

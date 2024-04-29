@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare(strict_types=1);
 
 namespace FG\X509\SAN;
 
@@ -18,41 +19,37 @@ class IPAddress extends ASNObject implements Parsable
 {
     const IDENTIFIER = 0x87; // not sure yet why this is the identifier used in SAN extensions
 
-    /** @var string */
-    private $value;
-
-    public function __construct($ipAddressString)
+    public function __construct(private string $value)
     {
-        $this->value = $ipAddressString;
     }
 
-    public function getType()
+    public function getType(): int
     {
         return self::IDENTIFIER;
     }
 
-    public function getContent()
+    public function getContent(): string
     {
         return $this->value;
     }
 
-    protected function calculateContentLength()
+    protected function calculateContentLength(): int
     {
         return 4;
     }
 
-    protected function getEncodedValue()
+    protected function getEncodedValue(): string
     {
         $ipParts = explode('.', $this->value);
-        $binary  = chr($ipParts[0]);
-        $binary .= chr($ipParts[1]);
-        $binary .= chr($ipParts[2]);
-        $binary .= chr($ipParts[3]);
+        $binary  = chr((int)$ipParts[0]);
+        $binary .= chr((int)$ipParts[1]);
+        $binary .= chr((int)$ipParts[2]);
+        $binary .= chr((int)$ipParts[3]);
 
         return $binary;
     }
 
-    public static function fromBinary(&$binaryData, &$offsetIndex = 0)
+    public static function fromBinary(string &$binaryData, ?int &$offsetIndex = 0): static
     {
         self::parseIdentifier($binaryData[$offsetIndex], self::IDENTIFIER, $offsetIndex++);
         $contentLength = self::parseContentLength($binaryData, $offsetIndex);

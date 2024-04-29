@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare(strict_types=1);
 
 namespace FG\ASN1\Universal;
 
@@ -28,7 +29,7 @@ class IA5String extends AbstractString
         }
     }
 
-    public function getType()
+    public function getType(): int
     {
         return Identifier::IA5_STRING;
     }

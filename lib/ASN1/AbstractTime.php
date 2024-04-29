@@ -7,20 +7,21 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare(strict_types=1);
 
 namespace FG\ASN1;
 
 use DateInterval;
 use DateTime;
+use DateTimeInterface;
 use DateTimeZone;
 use Exception;
 
 abstract class AbstractTime extends ASNObject
 {
-    /** @var DateTime */
-    protected $value;
+    protected DateTimeInterface $value;
 
-    public function __construct($dateTime = null, $dateTimeZone = 'UTC')
+    public function __construct(null|string|\DateTimeInterface $dateTime = null, $dateTimeZone = 'UTC')
     {
         if ($dateTime == null || is_string($dateTime)) {
             if (is_null($dateTime)) {
@@ -28,7 +29,7 @@ abstract class AbstractTime extends ASNObject
             }
             $timeZone = new DateTimeZone($dateTimeZone);
             $dateTimeObject = new DateTime($dateTime, $timeZone);
-            if ($dateTimeObject == false) {
+            if ($dateTimeObject === false) {
                 $errorMessage = $this->getLastDateTimeErrors();
                 $className = Identifier::getName($this->getType());
                 throw new Exception(sprintf("Could not create %s from date time string '%s': %s", $className, $dateTime, $errorMessage));
@@ -41,12 +42,12 @@ abstract class AbstractTime extends ASNObject
         $this->value = $dateTime;
     }
 
-    public function getContent()
+    public function getContent(): \DateTimeInterface
     {
         return $this->value;
     }
 
-    protected function getLastDateTimeErrors()
+    protected function getLastDateTimeErrors(): string
     {
         $messages = '';
         $lastErrors = DateTime::getLastErrors() ?: ['errors' => []];
@@ -57,12 +58,12 @@ abstract class AbstractTime extends ASNObject
         return substr($messages, 0, -2);
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->value->format("Y-m-d\tH:i:s");
     }
 
-    protected static function extractTimeZoneData(&$binaryData, &$offsetIndex, DateTime $dateTime)
+    protected static function extractTimeZoneData(&$binaryData, &$offsetIndex, DateTime $dateTime): \DateTimeInterface
     {
         $sign = $binaryData[$offsetIndex++];
         $timeOffsetHours   = intval(substr($binaryData, $offsetIndex, 2));

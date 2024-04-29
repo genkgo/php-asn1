@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare(strict_types=1);
 
 namespace FG\X509;
 
@@ -23,8 +24,8 @@ use FG\X509\SAN\SubjectAlternativeNames;
 
 class CertificateExtensions extends Set implements Parsable
 {
-    private $innerSequence;
-    private $extensions = [];
+    private Sequence $innerSequence;
+    private array $extensions = [];
 
     public function __construct()
     {
@@ -32,12 +33,12 @@ class CertificateExtensions extends Set implements Parsable
         parent::__construct($this->innerSequence);
     }
 
-    public function addSubjectAlternativeNames(SubjectAlternativeNames $sans)
+    public function addSubjectAlternativeNames(SubjectAlternativeNames $sans): void
     {
         $this->addExtension(OID::CERT_EXT_SUBJECT_ALT_NAME, $sans);
     }
 
-    private function addExtension($oidString, ASNObject $extension)
+    private function addExtension(string $oidString, ASNObject $extension): void
     {
         $sequence = new Sequence();
         $sequence->addChild(new ObjectIdentifier($oidString));
@@ -47,12 +48,12 @@ class CertificateExtensions extends Set implements Parsable
         $this->extensions[] = $extension;
     }
 
-    public function getContent()
+    public function getContent(): array
     {
         return $this->extensions;
     }
 
-    public static function fromBinary(&$binaryData, &$offsetIndex = 0)
+    public static function fromBinary(string &$binaryData, ?int &$offsetIndex = 0): static
     {
         self::parseIdentifier($binaryData[$offsetIndex], Identifier::SET, $offsetIndex++);
         self::parseContentLength($binaryData, $offsetIndex);

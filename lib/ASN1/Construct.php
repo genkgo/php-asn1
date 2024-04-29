@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare(strict_types=1);
 
 namespace FG\ASN1;
 
@@ -18,68 +19,59 @@ use Iterator;
 
 abstract class Construct extends ASNObject implements Countable, ArrayAccess, Iterator, Parsable
 {
-    /** @var \FG\ASN1\ASNObject[] */
-    protected $children;
-    private $iteratorPosition;
+    /** @var ASNObject[] */
+    protected array $children;
+    private int $iteratorPosition = 0;
 
     /**
-     * @param \FG\ASN1\ASNObject[] $children the variadic type hint is commented due to https://github.com/facebook/hhvm/issues/4858
+     * @param ASNObject[] $children the variadic type hint is commented due to https://github.com/facebook/hhvm/issues/4858
      */
-    public function __construct(/* HH_FIXME[4858]: variadic + strict */ ...$children)
+    public function __construct(ASNObject ...$children)
     {
         $this->children = $children;
-        $this->iteratorPosition = 0;
     }
 
-    public function getContent()
+    public function getContent(): mixed
     {
         return $this->children;
     }
 
-    #[\ReturnTypeWillChange]
-    public function rewind()
+    public function rewind(): void
     {
         $this->iteratorPosition = 0;
     }
 
-    #[\ReturnTypeWillChange]
-    public function current()
+    public function current(): ASNObject
     {
         return $this->children[$this->iteratorPosition];
     }
 
-    #[\ReturnTypeWillChange]
-    public function key()
+    public function key(): int
     {
         return $this->iteratorPosition;
     }
 
-    #[\ReturnTypeWillChange]
-    public function next()
+    public function next(): void
     {
         $this->iteratorPosition++;
     }
 
-    #[\ReturnTypeWillChange]
-    public function valid()
+    public function valid(): bool
     {
         return isset($this->children[$this->iteratorPosition]);
     }
 
-    #[\ReturnTypeWillChange]
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return array_key_exists($offset, $this->children);
     }
 
-    #[\ReturnTypeWillChange]
-    public function offsetGet($offset)
+    public function offsetGet($offset): ASNObject
     {
         return $this->children[$offset];
     }
 
-    #[\ReturnTypeWillChange]
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if ($offset === null) {
             $offset = count($this->children);
@@ -88,13 +80,12 @@ abstract class Construct extends ASNObject implements Countable, ArrayAccess, It
         $this->children[$offset] = $value;
     }
 
-    #[\ReturnTypeWillChange]
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->children[$offset]);
     }
 
-    protected function calculateContentLength()
+    protected function calculateContentLength(): int
     {
         $length = 0;
         foreach ($this->children as $component) {
@@ -104,7 +95,7 @@ abstract class Construct extends ASNObject implements Countable, ArrayAccess, It
         return $length;
     }
 
-    protected function getEncodedValue()
+    protected function getEncodedValue(): ?string
     {
         $result = '';
         foreach ($this->children as $component) {
@@ -114,19 +105,19 @@ abstract class Construct extends ASNObject implements Countable, ArrayAccess, It
         return $result;
     }
 
-    public function addChild(ASNObject $child)
+    public function addChild(ASNObject $child): void
     {
         $this->children[] = $child;
     }
 
-    public function addChildren(array $children)
+    public function addChildren(array $children): void
     {
         foreach ($children as $child) {
             $this->addChild($child);
         }
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         $nrOfChildren = $this->getNumberOfChildren();
         $childString = $nrOfChildren == 1 ? 'child' : 'children';
@@ -134,23 +125,23 @@ abstract class Construct extends ASNObject implements Countable, ArrayAccess, It
         return "[{$nrOfChildren} {$childString}]";
     }
 
-    public function getNumberOfChildren()
+    public function getNumberOfChildren(): int
     {
         return count($this->children);
     }
 
     /**
-     * @return \FG\ASN1\ASNObject[]
+     * @return ASNObject[]
      */
-    public function getChildren()
+    public function getChildren(): array
     {
         return $this->children;
     }
 
     /**
-     * @return \FG\ASN1\ASNObject
+     * @return ASNObject
      */
-    public function getFirstChild()
+    public function getFirstChild(): ASNObject
     {
         return $this->children[0];
     }
@@ -163,8 +154,7 @@ abstract class Construct extends ASNObject implements Countable, ArrayAccess, It
      *
      * @return Construct|static
      */
-    #[\ReturnTypeWillChange]
-    public static function fromBinary(&$binaryData, &$offsetIndex = 0)
+    public static function fromBinary(string &$binaryData, ?int &$offsetIndex = 0): static
     {
         $parsedObject = new static();
         self::parseIdentifier($binaryData[$offsetIndex], $parsedObject->getType(), $offsetIndex++);
@@ -189,13 +179,12 @@ abstract class Construct extends ASNObject implements Countable, ArrayAccess, It
         return $parsedObject;
     }
 
-    #[\ReturnTypeWillChange]
-    public function count($mode = COUNT_NORMAL)
+    public function count($mode = COUNT_NORMAL): int
     {
         return count($this->children, $mode);
     }
 
-    public function getIterator()
+    public function getIterator(): \ArrayIterator
     {
         return new ArrayIterator($this->children);
     }

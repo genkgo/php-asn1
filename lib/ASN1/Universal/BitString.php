@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare(strict_types=1);
 
 namespace FG\ASN1\Universal;
 
@@ -17,8 +18,6 @@ use FG\ASN1\Identifier;
 
 class BitString extends OctetString implements Parsable
 {
-    private $nrOfUnusedBits;
-
     /**
      * Creates a new ASN.1 BitString object.
      *
@@ -27,29 +26,27 @@ class BitString extends OctetString implements Parsable
      *
      * @throws Exception if the second parameter is no positive numeric value
      */
-    public function __construct($value, $nrOfUnusedBits = 0)
+    public function __construct(string|int $value, private int $nrOfUnusedBits = 0)
     {
         parent::__construct($value);
 
         if (!is_numeric($nrOfUnusedBits) || $nrOfUnusedBits < 0) {
             throw new Exception('BitString: second parameter needs to be a positive number (or zero)!');
         }
-
-        $this->nrOfUnusedBits = $nrOfUnusedBits;
     }
 
-    public function getType()
+    public function getType(): int
     {
         return Identifier::BITSTRING;
     }
 
-    protected function calculateContentLength()
+    protected function calculateContentLength(): int
     {
         // add one to the length for the first octet which encodes the number of unused bits in the last octet
         return parent::calculateContentLength() + 1;
     }
 
-    protected function getEncodedValue()
+    protected function getEncodedValue(): ?string
     {
         // the first octet determines the number of unused bits
         $nrOfUnusedBitsOctet = chr($this->nrOfUnusedBits);
@@ -58,12 +55,12 @@ class BitString extends OctetString implements Parsable
         return $nrOfUnusedBitsOctet.$actualContent;
     }
 
-    public function getNumberOfUnusedBits()
+    public function getNumberOfUnusedBits(): int
     {
         return $this->nrOfUnusedBits;
     }
 
-    public static function fromBinary(&$binaryData, &$offsetIndex = 0)
+    public static function fromBinary(string &$binaryData, ?int &$offsetIndex = 0): static
     {
         self::parseIdentifier($binaryData[$offsetIndex], Identifier::BITSTRING, $offsetIndex++);
         $contentLength = self::parseContentLength($binaryData, $offsetIndex, 2);

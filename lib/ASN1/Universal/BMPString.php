@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare(strict_types=1);
 
 namespace FG\ASN1\Universal;
 
@@ -25,16 +26,14 @@ class BMPString extends AbstractString
      * characters outside the Basic Multilingual Plane) of ISO/IEC 10646-1.
      *
      * TODO The encodable characters of this type are not yet checked.
-     *
-     * @param string $string
      */
-    public function __construct($string)
+    public function __construct(string $string)
     {
-        $this->value = $string;
+        parent::__construct($string);
         $this->allowAll();
     }
 
-    public function getType()
+    public function getType(): int
     {
         return Identifier::BMP_STRING;
     }
