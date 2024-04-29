@@ -23,6 +23,9 @@ abstract class AbstractTime extends ASNObject
     public function __construct($dateTime = null, $dateTimeZone = 'UTC')
     {
         if ($dateTime == null || is_string($dateTime)) {
+            if (is_null($dateTime)) {
+                $dateTime = 'NOW';
+            }
             $timeZone = new DateTimeZone($dateTimeZone);
             $dateTimeObject = new DateTime($dateTime, $timeZone);
             if ($dateTimeObject == false) {

@@ -321,6 +321,22 @@ class ObjectTest extends ASN1TestCase
         ASNObject::fromBinary($bin);
     }
 
+    public function testWithLeadingZeroes()
+    {
+        $this->expectException(ParserException::class);
+        $this->expectExceptionMessage("ASN.1 Parser Exception at offset 3: Content length cannot have leading zero bytes");
+        $bin = hex2bin('30820066023100814cc9a70febda342d4ada87fc39426f403d5e89808428460c1eca60c897bfd6728da14673854673d7d297ea944a15e202310084f5ef11d22f22d0548af6a50dbf2f6a1bb9054585af5e600c49cf35b1e69b712754dd781c837355ddd41c752193a7cd');
+        ASNObject::fromBinary($bin);
+    }
+
+    public function testExtendedFormShortLength()
+    {
+        $this->expectException(ParserException::class);
+        $this->expectExceptionMessage('ASN.1 Parser Exception at offset 3: Extended length used for short message');
+        $bin = hex2bin('30814502202ba3a8be6b94d5ec80a6d9d1190a436effe50d85a1eee859b8cc6af9bd5c2e18022100b329f479a2bbd0a5c384ee1493b1f5186a87139cac5df4087c134b49156847db');
+        ASNObject::fromBinary($bin);
+    }
+
     /**
      * @depends testFromBinary
      */

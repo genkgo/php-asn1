@@ -330,7 +330,14 @@ abstract class ASNObject implements Parsable
                 if (strlen($binaryData) <= $offsetIndex) {
                     throw new ParserException('Can not parse content length (long form) from data: Offset index larger than input size', $offsetIndex);
                 }
-                $contentLength = $contentLength->shiftLeft(8)->add(ord($binaryData[$offsetIndex++]));
+                $octet = ord($binaryData[$offsetIndex++]);
+                if ($i === 0 && $octet === 0) {
+                    throw new ParserException('Content length cannot have leading zero bytes', $offsetIndex);
+                }
+                $contentLength = $contentLength->shiftLeft(8)->add($octet);
+            }
+            if ($nrOfLengthOctets < 2 && $contentLength->compare(0x80) < 0) {
+                throw new ParserException('Extended length used for short message', $offsetIndex);
             }
 
             if ($contentLength->compare(PHP_INT_MAX) > 0) {
