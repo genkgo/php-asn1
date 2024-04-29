@@ -1,12 +1,15 @@
 # Project and backup files
-*~
-*.project
-.settings/*
-.idea
+/*~
+/*.project
+/.settings/*
+/.idea
 
 # Composer
-vendor
-composer.lock
+/vendor
+/composer.lock
 
 # Test coverage reports
-clover.xml
+/clover.xml
+
+# ignore phpunit
+/.phpunit.result.cache
