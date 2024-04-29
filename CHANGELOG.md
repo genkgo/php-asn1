@@ -1,3 +1,6 @@
+#### v2.7.0 (2024-04)
+* Drop PHP 8.0, add PHP 8.3
+
 #### v2.6.1 (2024-04)
 * Stricter content length in ASNObject
 
