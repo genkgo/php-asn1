@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare(strict_types=1);
 
 namespace FG\ASN1\Universal;
 
@@ -17,7 +18,7 @@ use FG\ASN1\Identifier;
 
 class OctetString extends ASNObject implements Parsable
 {
-    protected $value;
+    protected ?string $value = null;
 
     public function __construct($value)
     {
@@ -40,12 +41,12 @@ class OctetString extends ASNObject implements Parsable
         $this->value = $value;
     }
 
-    public function getType()
+    public function getType(): int
     {
         return Identifier::OCTETSTRING;
     }
 
-    protected function calculateContentLength()
+    protected function calculateContentLength(): int
     {
         if (is_null($this->value)) {
             return 0;
@@ -53,7 +54,7 @@ class OctetString extends ASNObject implements Parsable
         return strlen($this->value) / 2;
     }
 
-    protected function getEncodedValue()
+    protected function getEncodedValue(): ?string
     {
         $value = $this->value;
         if (is_null($value)) {
@@ -72,7 +73,7 @@ class OctetString extends ASNObject implements Parsable
         return $result;
     }
 
-    public function getContent()
+    public function getContent(): string
     {
         if (is_null($this->value)) {
             return '';
@@ -80,12 +81,12 @@ class OctetString extends ASNObject implements Parsable
         return strtoupper($this->value);
     }
 
-    public function getBinaryContent()
+    public function getBinaryContent(): string
     {
         return $this->getEncodedValue();
     }
 
-    public static function fromBinary(&$binaryData, &$offsetIndex = 0)
+    public static function fromBinary(string &$binaryData, ?int &$offsetIndex = 0): static
     {
         self::parseIdentifier($binaryData[$offsetIndex], Identifier::OCTETSTRING, $offsetIndex++);
         $contentLength = self::parseContentLength($binaryData, $offsetIndex);

@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare(strict_types=1);
 
 namespace FG\ASN1\Universal;
 
@@ -34,19 +35,17 @@ class PrintableString extends AbstractString
      * COLON                 :
      * EQUALS SIGN           =
      * QUESTION MARK         ?
-     *
-     * @param string $string
      */
-    public function __construct($string)
+    public function __construct(string $string)
     {
-        $this->value = $string;
+        parent::__construct($string);
         $this->allowNumbers();
         $this->allowAllLetters();
         $this->allowSpaces();
         $this->allowCharacters("'", '(', ')', '+', '-', '.', ',', '/', ':', '=', '?');
     }
 
-    public function getType()
+    public function getType(): int
     {
         return Identifier::PRINTABLE_STRING;
     }

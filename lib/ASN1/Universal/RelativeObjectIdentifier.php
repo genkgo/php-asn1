@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare(strict_types=1);
 
 namespace FG\ASN1\Universal;
 
@@ -33,12 +34,12 @@ class RelativeObjectIdentifier extends ObjectIdentifier implements Parsable
         }
     }
 
-    public function getType()
+    public function getType():int
     {
         return Identifier::RELATIVE_OID;
     }
 
-    public static function fromBinary(&$binaryData, &$offsetIndex = 0)
+    public static function fromBinary(string &$binaryData, ?int &$offsetIndex = 0): static
     {
         self::parseIdentifier($binaryData[$offsetIndex], Identifier::RELATIVE_OID, $offsetIndex++);
         $contentLength = self::parseContentLength($binaryData, $offsetIndex, 1);

@@ -7,20 +7,19 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare(strict_types=1);
 
 namespace FG\ASN1\Composite;
 
+use FG\ASN1\ASNObject;
+use FG\ASN1\Universal\ObjectIdentifier;
 use FG\ASN1\Universal\PrintableString;
 use FG\ASN1\Universal\IA5String;
 use FG\ASN1\Universal\UTF8String;
 
 class RDNString extends RelativeDistinguishedName
 {
-    /**
-     * @param string|\FG\ASN1\Universal\ObjectIdentifier $objectIdentifierString
-     * @param string|\FG\ASN1\ASNObject $value
-     */
-    public function __construct($objectIdentifierString, $value)
+    public function __construct(string|ObjectIdentifier $objectIdentifierString, string|ASNObject $value)
     {
         if (PrintableString::isValid($value)) {
             $value = new PrintableString($value);

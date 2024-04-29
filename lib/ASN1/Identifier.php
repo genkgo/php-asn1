@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare(strict_types=1);
 
 namespace FG\ASN1;
 
@@ -71,15 +72,9 @@ class Identifier
      * Creates an identifier. Short form identifiers are returned as integers
      * for BC, long form identifiers will be returned as a string of octets.
      *
-     * @param int $class
-     * @param bool $isConstructed
-     * @param int $tagNumber
-     *
      * @throws Exception if the given arguments are invalid
-     *
-     * @return int|string
      */
-    public static function create($class, $isConstructed, $tagNumber)
+    public static function create(int $class, bool $isConstructed, int|string $tagNumber): int|string
     {
         if (!is_numeric($class) || $class < self::CLASS_UNIVERSAL || $class > self::CLASS_PRIVATE) {
             throw new Exception(sprintf('Invalid class %d given', $class));
@@ -104,12 +99,12 @@ class Identifier
         return chr($firstOctet).Base128::encode($tagNumber);
     }
 
-    public static function isConstructed($identifierOctet)
+    public static function isConstructed(int $identifierOctet): bool
     {
         return ($identifierOctet & self::IS_CONSTRUCTED) === self::IS_CONSTRUCTED;
     }
 
-    public static function isLongForm($identifierOctet)
+    public static function isLongForm(int $identifierOctet): bool
     {
         return ($identifierOctet & self::LONG_FORM) === self::LONG_FORM;
     }
@@ -120,12 +115,8 @@ class Identifier
      * Example: ASN.1 Octet String
      *
      * @see Identifier::getShortName()
-     *
-     * @param int|string $identifier
-     *
-     * @return string
      */
-    public static function getName($identifier)
+    public static function getName(int|string $identifier): string
     {
         $identifierOctet = self::makeNumeric($identifier);
 
@@ -147,12 +138,8 @@ class Identifier
      *
      * @see Identifier::getName()
      * @see Identifier::getClassDescription()
-     *
-     * @param int|string $identifier
-     *
-     * @return string
      */
-    public static function getShortName($identifier)
+    public static function getShortName(int|string $identifier): string
     {
         $identifierOctet = self::makeNumeric($identifier);
 
@@ -243,12 +230,8 @@ class Identifier
      * Example:
      *     Constructed context-specific
      *     Primitive universal
-     *
-     * @param int|string $identifier
-     *
-     * @return string
      */
-    public static function getClassDescription($identifier)
+    public static function getClassDescription(int|string $identifier): string
     {
         $identifierOctet = self::makeNumeric($identifier);
 
@@ -280,12 +263,7 @@ class Identifier
         return $classDescription;
     }
 
-    /**
-     * @param int|string $identifier
-     *
-     * @return int
-     */
-    public static function getTagNumber($identifier)
+    public static function getTagNumber(string|int $identifier): string|int
     {
         $firstOctet = self::makeNumeric($identifier);
         $tagNumber = $firstOctet & self::LONG_FORM;
@@ -300,35 +278,35 @@ class Identifier
         return Base128::decode(substr($identifier, 1));
     }
 
-    public static function isUniversalClass($identifier)
+    public static function isUniversalClass(string|int $identifier): bool
     {
         $identifier = self::makeNumeric($identifier);
 
         return $identifier >> 6 == self::CLASS_UNIVERSAL;
     }
 
-    public static function isApplicationClass($identifier)
+    public static function isApplicationClass(string|int $identifier): bool
     {
         $identifier = self::makeNumeric($identifier);
 
         return $identifier >> 6 == self::CLASS_APPLICATION;
     }
 
-    public static function isContextSpecificClass($identifier)
+    public static function isContextSpecificClass(string|int $identifier): bool
     {
         $identifier = self::makeNumeric($identifier);
 
         return $identifier >> 6 == self::CLASS_CONTEXT_SPECIFIC;
     }
 
-    public static function isPrivateClass($identifier)
+    public static function isPrivateClass(string|int $identifier): bool
     {
         $identifier = self::makeNumeric($identifier);
 
         return $identifier >> 6 == self::CLASS_PRIVATE;
     }
 
-    private static function makeNumeric($identifierOctet)
+    private static function makeNumeric(int|string $identifierOctet): int
     {
         if (!is_numeric($identifierOctet)) {
             return ord($identifierOctet);

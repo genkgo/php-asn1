@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare(strict_types=1);
 
 namespace FG\ASN1\Universal;
 
@@ -26,22 +27,22 @@ use FG\ASN1\Exception\ParserException;
  */
 class UTCTime extends AbstractTime implements Parsable
 {
-    public function getType()
+    public function getType(): int
     {
         return Identifier::UTC_TIME;
     }
 
-    protected function calculateContentLength()
+    protected function calculateContentLength(): int
     {
         return 13; // Content is a string o the following format: YYMMDDhhmmssZ (13 octets)
     }
 
-    protected function getEncodedValue()
+    protected function getEncodedValue(): ?string
     {
         return $this->value->format('ymdHis').'Z';
     }
 
-    public static function fromBinary(&$binaryData, &$offsetIndex = 0)
+    public static function fromBinary(string &$binaryData, ?int &$offsetIndex = 0): static
     {
         self::parseIdentifier($binaryData[$offsetIndex], Identifier::UTC_TIME, $offsetIndex++);
         $contentLength = self::parseContentLength($binaryData, $offsetIndex, 11);

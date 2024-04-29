@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare(strict_types=1);
 
 namespace FG\ASN1\Universal;
 
@@ -20,8 +21,8 @@ use FG\ASN1\Exception\ParserException;
 
 class ObjectIdentifier extends ASNObject implements Parsable
 {
-    protected $subIdentifiers;
-    protected $value;
+    protected array $subIdentifiers;
+    protected string $value;
 
     public function __construct($value)
     {
@@ -46,17 +47,17 @@ class ObjectIdentifier extends ASNObject implements Parsable
         $this->value = $value;
     }
 
-    public function getContent()
+    public function getContent(): string
     {
         return $this->value;
     }
 
-    public function getType()
+    public function getType(): int
     {
         return Identifier::OBJECT_IDENTIFIER;
     }
 
-    protected function calculateContentLength()
+    protected function calculateContentLength(): int
     {
         $length = 0;
         foreach ($this->subIdentifiers as $subIdentifier) {
@@ -69,7 +70,7 @@ class ObjectIdentifier extends ASNObject implements Parsable
         return $length;
     }
 
-    protected function getEncodedValue()
+    protected function getEncodedValue(): ?string
     {
         $encodedValue = '';
         foreach ($this->subIdentifiers as $subIdentifier) {
@@ -79,12 +80,12 @@ class ObjectIdentifier extends ASNObject implements Parsable
         return $encodedValue;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return OID::getName($this->value);
     }
 
-    public static function fromBinary(&$binaryData, &$offsetIndex = 0)
+    public static function fromBinary(string &$binaryData, ?int &$offsetIndex = 0): static
     {
         self::parseIdentifier($binaryData[$offsetIndex], Identifier::OBJECT_IDENTIFIER, $offsetIndex++);
         $contentLength = self::parseContentLength($binaryData, $offsetIndex, 1);
@@ -104,15 +105,9 @@ class ObjectIdentifier extends ASNObject implements Parsable
      * differently. This way relative object identifiers can also be parsed
      * using this.
      *
-     * @param $binaryData
-     * @param $offsetIndex
-     * @param $octetsToRead
-     *
      * @throws ParserException
-     *
-     * @return string
      */
-    protected static function parseOid(&$binaryData, &$offsetIndex, $octetsToRead)
+    protected static function parseOid(string &$binaryData, int &$offsetIndex, int $octetsToRead): string
     {
         $oid = '';
 

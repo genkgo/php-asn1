@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare(strict_types=1);
 
 namespace FG\X509\SAN;
 
@@ -22,44 +23,44 @@ use FG\ASN1\Universal\Sequence;
  */
 class SubjectAlternativeNames extends ASNObject implements Parsable
 {
-    private $alternativeNamesSequence;
+    private Sequence $alternativeNamesSequence;
 
     public function __construct()
     {
         $this->alternativeNamesSequence = new Sequence();
     }
 
-    protected function calculateContentLength()
+    protected function calculateContentLength(): int
     {
         return $this->alternativeNamesSequence->getObjectLength();
     }
 
-    public function getType()
+    public function getType(): int
     {
         return Identifier::OCTETSTRING;
     }
 
-    public function addDomainName(DNSName $domainName)
+    public function addDomainName(DNSName $domainName): void
     {
         $this->alternativeNamesSequence->addChild($domainName);
     }
 
-    public function addIP(IPAddress $ip)
+    public function addIP(IPAddress $ip): void
     {
         $this->alternativeNamesSequence->addChild($ip);
     }
 
-    public function getContent()
+    public function getContent(): array
     {
         return $this->alternativeNamesSequence->getContent();
     }
 
-    protected function getEncodedValue()
+    protected function getEncodedValue(): string
     {
         return $this->alternativeNamesSequence->getBinary();
     }
 
-    public static function fromBinary(&$binaryData, &$offsetIndex = 0)
+    public static function fromBinary(string &$binaryData, ?int &$offsetIndex = 0): static
     {
         self::parseIdentifier($binaryData[$offsetIndex], Identifier::OCTETSTRING, $offsetIndex++);
         $contentLength = self::parseContentLength($binaryData, $offsetIndex);

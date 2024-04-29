@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare(strict_types=1);
 
 namespace FG\ASN1\Universal;
 
@@ -19,38 +20,32 @@ use FG\ASN1\Identifier;
 
 class Integer extends ASNObject implements Parsable
 {
-    /** @var int */
-    private $value;
-
     /**
-     * @param int $value
-     *
      * @throws Exception if the value is not numeric
      */
-    public function __construct($value)
+    public function __construct(private string|int $value)
     {
         if (is_numeric($value) == false) {
             throw new Exception("Invalid VALUE [{$value}] for ASN1_INTEGER");
         }
-        $this->value = $value;
     }
 
-    public function getType()
+    public function getType(): int
     {
         return Identifier::INTEGER;
     }
 
-    public function getContent()
+    public function getContent(): string|int
     {
         return $this->value;
     }
 
-    protected function calculateContentLength()
+    protected function calculateContentLength(): int
     {
         return strlen($this->getEncodedValue());
     }
 
-    protected function getEncodedValue()
+    protected function getEncodedValue(): ?string
     {
         $value = BigInteger::create($this->value, 10);
         $negative = $value->compare(0) < 0;
@@ -92,7 +87,7 @@ class Integer extends ASNObject implements Parsable
         return $r;
     }
 
-    private static function ensureMinimalEncoding($binaryData, $offsetIndex)
+    private static function ensureMinimalEncoding($binaryData, $offsetIndex): void
     {
         // All the first nine bits cannot equal 0 or 1, which would
         // be non-minimal encoding for positive and negative integers respectively
@@ -102,7 +97,7 @@ class Integer extends ASNObject implements Parsable
         }
     }
 
-    public static function fromBinary(&$binaryData, &$offsetIndex = 0)
+    public static function fromBinary(string &$binaryData, ?int &$offsetIndex = 0): static
     {
         $parsedObject = new static(0);
         self::parseIdentifier($binaryData[$offsetIndex], $parsedObject->getType(), $offsetIndex++);

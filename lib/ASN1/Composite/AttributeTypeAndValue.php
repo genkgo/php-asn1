@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare(strict_types=1);
 
 namespace FG\ASN1\Composite;
 
@@ -16,11 +17,7 @@ use FG\ASN1\Universal\ObjectIdentifier;
 
 class AttributeTypeAndValue extends Sequence
 {
-    /**
-     * @param ObjectIdentifier|string $objIdentifier
-     * @param \FG\ASN1\ASNObject $value
-     */
-    public function __construct($objIdentifier, ASNObject $value)
+    public function __construct(ObjectIdentifier|string $objIdentifier, ASNObject $value)
     {
         if ($objIdentifier instanceof ObjectIdentifier == false) {
             $objIdentifier = new ObjectIdentifier($objIdentifier);
@@ -28,7 +25,7 @@ class AttributeTypeAndValue extends Sequence
         parent::__construct($objIdentifier, $value);
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->children[0].': '.$this->children[1];
     }

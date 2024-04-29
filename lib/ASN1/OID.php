@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare(strict_types=1);
 
 namespace FG\ASN1;
 
@@ -69,14 +70,9 @@ class OID
      * query http://oid-info.com for the right name.
      * This behavior can be suppressed by setting the second method parameter to false.
      *
-     * @param string $oidString
-     * @param bool $loadFromWeb
-     *
      * @see self::loadFromWeb($oidString)
-     *
-     * @return string
      */
-    public static function getName($oidString, $loadFromWeb = true)
+    public static function getName(string $oidString, bool $loadFromWeb = true): string
     {
         $oids = [
             '1.2' => 'ISO Member Body',
@@ -998,7 +994,7 @@ class OID
         }
     }
 
-    public static function loadFromWeb($oidString)
+    public static function loadFromWeb(string $oidString): string
     {
         $ch = curl_init("http://oid-info.com/get/{$oidString}");
 

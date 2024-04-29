@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare(strict_types=1);
 
 namespace FG\ASN1\Universal;
 
@@ -17,45 +18,39 @@ use FG\ASN1\Exception\ParserException;
 
 class Boolean extends ASNObject implements Parsable
 {
-    private $value;
-
-    /**
-     * @param bool $value
-     */
-    public function __construct($value)
+    public function __construct(private bool $value)
     {
-        $this->value = $value;
     }
 
-    public function getType()
+    public function getType(): int
     {
         return Identifier::BOOLEAN;
     }
 
-    protected function calculateContentLength()
+    protected function calculateContentLength(): int
     {
         return 1;
     }
 
-    protected function getEncodedValue()
+    protected function getEncodedValue(): string
     {
-        if ($this->value == false) {
+        if ($this->value === false) {
             return chr(0x00);
         } else {
             return chr(0xFF);
         }
     }
 
-    public function getContent()
+    public function getContent(): string
     {
-        if ($this->value == true) {
+        if ($this->value === true) {
             return 'TRUE';
         } else {
             return 'FALSE';
         }
     }
 
-    public static function fromBinary(&$binaryData, &$offsetIndex = 0)
+    public static function fromBinary(string &$binaryData, ?int &$offsetIndex = 0): static
     {
         self::parseIdentifier($binaryData[$offsetIndex], Identifier::BOOLEAN, $offsetIndex++);
         $contentLength = self::parseContentLength($binaryData, $offsetIndex);
