@@ -106,21 +106,21 @@ class BigIntegerGmp extends BigInteger
             $b = gmp_intval($b->_rh);
         }
         $ret = new self();
-        $ret->_rh = gmp_pow($this->_rh, $b);
+        $ret->_rh = $this->_rh ** $b;
         return $ret;
     }
 
     public function shiftRight($bits=8)
     {
         $ret = new self();
-        $ret->_rh = gmp_div($this->_rh, gmp_pow(2, $bits));
+        $ret->_rh = gmp_div($this->_rh, gmp_init(2) ** $bits);
         return $ret;
     }
 
     public function shiftLeft($bits=8)
     {
         $ret = new self();
-        $ret->_rh = gmp_mul($this->_rh, gmp_pow(2, $bits));
+        $ret->_rh = gmp_mul($this->_rh, gmp_init(2) ** $bits);
         return $ret;
     }
 
