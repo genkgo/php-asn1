@@ -113,14 +113,14 @@ class BigIntegerGmp extends BigInteger
     public function shiftRight($bits=8)
     {
         $ret = new self();
-        $ret->_rh = gmp_div($this->_rh, gmp_init(2) ** $bits);
+        $ret->_rh = $this->_rh >> $bits;
         return $ret;
     }
 
     public function shiftLeft($bits=8)
     {
         $ret = new self();
-        $ret->_rh = gmp_mul($this->_rh, gmp_init(2) ** $bits);
+        $ret->_rh = $this->_rh << $bits;
         return $ret;
     }
 
