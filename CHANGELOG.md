@@ -1,5 +1,8 @@
-#### v2.7.0 (2024-04)
-* Drop PHP 8.0, add PHP 8.3
+#### v2.9.0 (2026-01)
+* Support PHP 8.5
+
+#### v2.8.0 (2025-02)
+* Support PHP 8.4
 
 #### v2.6.1 (2024-04)
 * Stricter content length in ASNObject
