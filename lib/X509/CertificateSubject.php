@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare(strict_types=1);
 
 namespace FG\X509;
 
@@ -19,25 +20,15 @@ use FG\ASN1\Universal\Sequence;
 
 class CertificateSubject extends Sequence implements Parsable
 {
-    private $commonName;
-    private $email;
-    private $organization;
-    private $locality;
-    private $state;
-    private $country;
-    private $organizationalUnit;
-
-    /**
-     * @param string $commonName
-     * @param string $email
-     * @param string $organization
-     * @param string $locality
-     * @param string $state
-     * @param string $country
-     * @param string $organizationalUnit
-     */
-    public function __construct($commonName, $email, $organization, $locality, $state, $country, $organizationalUnit)
-    {
+    public function __construct(
+        private string $commonName,
+        private string $email,
+        private string $organization,
+        private string $locality,
+        private string $state,
+        private string $country,
+        private string $organizationalUnit
+    ) {
         parent::__construct(
             new RDNString(OID::COUNTRY_NAME, $country),
             new RDNString(OID::STATE_OR_PROVINCE_NAME, $state),
@@ -47,52 +38,44 @@ class CertificateSubject extends Sequence implements Parsable
             new RDNString(OID::COMMON_NAME, $commonName),
             new RDNString(OID::PKCS9_EMAIL, $email)
         );
-
-        $this->commonName = $commonName;
-        $this->email = $email;
-        $this->organization = $organization;
-        $this->locality = $locality;
-        $this->state = $state;
-        $this->country = $country;
-        $this->organizationalUnit = $organizationalUnit;
     }
 
-    public function getCommonName()
+    public function getCommonName(): string
     {
         return $this->commonName;
     }
 
-    public function getEmail()
+    public function getEmail(): string
     {
         return $this->email;
     }
 
-    public function getOrganization()
+    public function getOrganization(): string
     {
         return $this->organization;
     }
 
-    public function getLocality()
+    public function getLocality(): string
     {
         return $this->locality;
     }
 
-    public function getState()
+    public function getState(): string
     {
         return $this->state;
     }
 
-    public function getCountry()
+    public function getCountry(): string
     {
         return $this->country;
     }
 
-    public function getOrganizationalUnit()
+    public function getOrganizationalUnit(): string
     {
         return $this->organizationalUnit;
     }
 
-    public static function fromBinary(&$binaryData, &$offsetIndex = 0)
+    public static function fromBinary(string &$binaryData, ?int &$offsetIndex = 0): static
     {
         self::parseIdentifier($binaryData[$offsetIndex], Identifier::SEQUENCE, $offsetIndex++);
         $contentLength = self::parseContentLength($binaryData, $offsetIndex);

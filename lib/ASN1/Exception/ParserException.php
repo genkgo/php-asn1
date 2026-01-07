@@ -7,22 +7,18 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare(strict_types=1);
 
 namespace FG\ASN1\Exception;
 
 class ParserException extends \Exception
 {
-    private $errorMessage;
-    private $offset;
-
-    public function __construct($errorMessage, $offset)
+    public function __construct(private string $errorMessage, private int $offset)
     {
-        $this->errorMessage = $errorMessage;
-        $this->offset = $offset;
         parent::__construct("ASN.1 Parser Exception at offset {$this->offset}: {$this->errorMessage}");
     }
 
-    public function getOffset()
+    public function getOffset(): int
     {
         return $this->offset;
     }

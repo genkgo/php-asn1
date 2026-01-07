@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare(strict_types=1);
 
 namespace FG\X509\CSR;
 
@@ -22,12 +23,12 @@ use FG\ASN1\Universal\ObjectIdentifier;
 
 class Attributes extends Construct implements Parsable
 {
-    public function getType()
+    public function getType(): int
     {
         return 0xA0;
     }
 
-    public function addAttribute($objectIdentifier, Set $attribute)
+    public function addAttribute($objectIdentifier, Set $attribute): void
     {
         if (is_string($objectIdentifier)) {
             $objectIdentifier = new ObjectIdentifier($objectIdentifier);
@@ -37,7 +38,7 @@ class Attributes extends Construct implements Parsable
         $this->addChild($attributeSequence);
     }
 
-    public static function fromBinary(&$binaryData, &$offsetIndex = 0)
+    public static function fromBinary(string &$binaryData, ?int &$offsetIndex = 0): static
     {
         self::parseIdentifier($binaryData[$offsetIndex], 0xA0, $offsetIndex++);
         $contentLength = self::parseContentLength($binaryData, $offsetIndex);

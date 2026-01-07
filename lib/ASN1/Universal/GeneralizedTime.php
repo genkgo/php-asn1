@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare(strict_types=1);
 
 namespace FG\ASN1\Universal;
 
@@ -40,12 +41,12 @@ class GeneralizedTime extends AbstractTime implements Parsable
         }
     }
 
-    public function getType()
+    public function getType(): int
     {
         return Identifier::GENERALIZED_TIME;
     }
 
-    protected function calculateContentLength()
+    protected function calculateContentLength(): int
     {
         $contentSize = 15; // YYYYMMDDHHmmSSZ
 
@@ -56,12 +57,12 @@ class GeneralizedTime extends AbstractTime implements Parsable
         return $contentSize;
     }
 
-    public function containsFractionalSecondsElement()
+    public function containsFractionalSecondsElement(): bool
     {
         return intval($this->microseconds) > 0;
     }
 
-    protected function getEncodedValue()
+    protected function getEncodedValue(): ?string
     {
         $encodedContent = $this->value->format('YmdHis');
         if ($this->containsFractionalSecondsElement()) {
@@ -71,7 +72,7 @@ class GeneralizedTime extends AbstractTime implements Parsable
         return $encodedContent.'Z';
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         if ($this->containsFractionalSecondsElement()) {
             return $this->value->format("Y-m-d\tH:i:s.uP");
@@ -80,7 +81,7 @@ class GeneralizedTime extends AbstractTime implements Parsable
         }
     }
 
-    public static function fromBinary(&$binaryData, &$offsetIndex = 0)
+    public static function fromBinary(string &$binaryData, ?int &$offsetIndex = 0): static
     {
         self::parseIdentifier($binaryData[$offsetIndex], Identifier::GENERALIZED_TIME, $offsetIndex++);
         $lengthOfMinimumTimeString = 14; // YYYYMMDDHHmmSS

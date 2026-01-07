@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare(strict_types=1);
 
 namespace FG\ASN1;
 
@@ -31,21 +32,15 @@ use FG\ASN1\Exception\ParserException;
  */
 class ExplicitlyTaggedObject extends ASNObject
 {
-    /** @var \FG\ASN1\ASNObject[] */
-    private $decoratedObjects;
-    private $tag;
+    /** @var ASNObject[] */
+    private array $decoratedObjects;
 
-    /**
-     * @param int $tag
-     * @param \FG\ASN1\ASNObject $objects,...
-     */
-    public function __construct($tag, /* HH_FIXME[4858]: variadic + strict */ ...$objects)
+    public function __construct(private string|int $tag, ASNObject ...$objects)
     {
-        $this->tag = $tag;
         $this->decoratedObjects = $objects;
     }
 
-    protected function calculateContentLength()
+    protected function calculateContentLength(): int
     {
         $length = 0;
         foreach ($this->decoratedObjects as $object) {
@@ -55,7 +50,7 @@ class ExplicitlyTaggedObject extends ASNObject
         return $length;
     }
 
-    protected function getEncodedValue()
+    protected function getEncodedValue(): ?string
     {
         $encoded = '';
         foreach ($this->decoratedObjects as $object) {
@@ -65,12 +60,12 @@ class ExplicitlyTaggedObject extends ASNObject
         return $encoded;
     }
 
-    public function getContent()
+    public function getContent(): array
     {
         return $this->decoratedObjects;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         switch ($length = count($this->decoratedObjects)) {
         case 0:
@@ -83,24 +78,24 @@ class ExplicitlyTaggedObject extends ASNObject
         }
     }
 
-    public function getType()
+    public function getType(): int
     {
         return ord($this->getIdentifier());
     }
 
-    public function getIdentifier()
+    public function getIdentifier(): string
     {
         $identifier = Identifier::create(Identifier::CLASS_CONTEXT_SPECIFIC, true, $this->tag);
 
         return is_int($identifier) ? chr($identifier) : $identifier;
     }
 
-    public function getTag()
+    public function getTag(): int
     {
         return $this->tag;
     }
 
-    public static function fromBinary(&$binaryData, &$offsetIndex = 0)
+    public static function fromBinary(string &$binaryData, ?int &$offsetIndex = 0): static
     {
         $identifier = self::parseBinaryIdentifier($binaryData, $offsetIndex);
         $firstIdentifierOctet = ord($identifier);

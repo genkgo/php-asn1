@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare(strict_types=1);
 
 namespace FG\ASN1;
 
@@ -14,81 +15,76 @@ use Exception;
 
 abstract class AbstractString extends ASNObject implements Parsable
 {
-    /** @var string */
-    protected $value;
-    private $checkStringForIllegalChars = true;
-    private $allowedCharacters = [];
+    private bool $checkStringForIllegalChars = true;
+    private array $allowedCharacters = [];
 
     /**
      * The abstract base class for ASN.1 classes which represent some string of character.
-     *
-     * @param string $string
      */
-    public function __construct($string)
+    public function __construct(protected string $value)
     {
-        $this->value = $string;
     }
 
-    public function getContent()
+    public function getContent(): string
     {
         return $this->value;
     }
 
-    protected function allowCharacter($character)
+    protected function allowCharacter(string $character): void
     {
         $this->allowedCharacters[] = $character;
     }
 
-    protected function allowCharacters(...$characters)
+    protected function allowCharacters(string ...$characters): void
     {
         foreach ($characters as $character) {
             $this->allowedCharacters[] = $character;
         }
     }
 
-    protected function allowNumbers()
+    protected function allowNumbers(): void
     {
         foreach (range('0', '9') as $char) {
             $this->allowedCharacters[] = (string) $char;
         }
     }
 
-    protected function allowAllLetters()
+    protected function allowAllLetters(): void
     {
         $this->allowSmallLetters();
         $this->allowCapitalLetters();
     }
 
-    protected function allowSmallLetters()
+    protected function allowSmallLetters(): void
     {
         foreach (range('a', 'z') as $char) {
             $this->allowedCharacters[] = $char;
         }
     }
 
-    protected function allowCapitalLetters()
+    protected function allowCapitalLetters(): void
     {
         foreach (range('A', 'Z') as $char) {
             $this->allowedCharacters[] = $char;
         }
     }
 
-    protected function allowSpaces()
+    protected function allowSpaces(): void
     {
         $this->allowedCharacters[] = ' ';
     }
 
-    protected function allowAll()
+    protected function allowAll(): void
     {
         $this->checkStringForIllegalChars = false;
     }
 
-    protected function calculateContentLength()
+    protected function calculateContentLength(): int
     {
         return strlen($this->value);
     }
 
-    protected function getEncodedValue()
+    protected function getEncodedValue(): ?string
     {
         if ($this->checkStringForIllegalChars) {
             $this->checkString();
@@ -97,18 +93,18 @@ abstract class AbstractString extends ASNObject implements Parsable
         return $this->value;
     }
 
-    protected function checkString()
+    protected function checkString(): void
     {
         $stringLength = $this->getContentLength();
         for ($i = 0; $i < $stringLength; $i++) {
-            if (in_array($this->value[$i], $this->allowedCharacters) == false) {
+            if (in_array($this->value[$i], $this->allowedCharacters) === false) {
                 $typeName = Identifier::getName($this->getType());
                 throw new Exception("Could not create a {$typeName} from the character sequence '{$this->value}'.");
             }
         }
     }
 
-    public static function fromBinary(&$binaryData, &$offsetIndex = 0)
+    public static function fromBinary(string &$binaryData, ?int &$offsetIndex = 0): static
     {
         $parsedObject = new static('');
 
